@@ -1,6 +1,15 @@
-class Fourier {
-  Fourier() {};
+#pragma once
 
+#include <vector>
+#include <iterator>
+#include <iostream>
+
+struct Point {
+  int timestamp;
+  double value;
+};
+
+class Fourier {
   public:
-  static int calc();
+  static void fft(std::vector<Point> P);
 };

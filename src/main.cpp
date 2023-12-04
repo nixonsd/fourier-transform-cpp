@@ -2,6 +2,8 @@
 #include "fourier.h"
 
 int main() {
-  std::wcout << L"Hello World\n" <<  Fourier::calc() << std::endl;
+  // input values P (timestamp, value of the measurment)
+  std::vector<Point> P = {{1, 8}, {2, 4}, {3, 5}, {4, 9}};
+  Fourier::fft(P);
   return 0;
 }
