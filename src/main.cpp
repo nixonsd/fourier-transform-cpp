@@ -4,9 +4,7 @@
 
 #include "fourier.h"
 
-#include "matplotlibcpp.h"
-
-namespace plt = matplotlibcpp;
+#include <matplot/matplot.h>
 
 int main() {
   // input values P (timestamp, value of the measurment)
@@ -42,11 +40,11 @@ int main() {
   // }
 
   // const int n = values.size();
-  const int n = pow(2, int(ceil(log2(L))));
-  // const int n = L;
+  // const int n = pow(2, int(ceil(log2(L))));
+  const int n = L;
   Complex* test = new Complex[n];
 
-  std::fill(test, test + n + 1, Complex(0, 0));
+  // std::fill(test, test + n + 1, Complex(0, 0));
 
   for (int i = 0; t < tmax; t += T, i++) {
     // values.push_back({t, 0});
@@ -60,7 +58,7 @@ int main() {
 
 	// forward fft
 	Fourier::fft(data);
-  data = data[std::slice(2, L / 2 + 2, 1)];
+  data = data[std::slice(1, L / 2 + 1, 1)];
 
 	// std::cout << "fft" << std::endl;
   // x[std::slice(0, N/2, 2)]
@@ -68,9 +66,15 @@ int main() {
 
   std::cout << std::fixed << std::setprecision(3);
 
+  std::vector<double> frequencies(L/2);
+  std::vector<double> amplitude(L/2);
   for (int i = 0; i < L / 2 + 1; ++i) {
+    frequencies[i] = samplingFreq*i/L;
+    amplitude[i] = 2 * abs(data[i]) / L;
+
+    // delete when testing is done
     double f = samplingFreq*i/L;
-    std::cout << "f = " << f << "hz; fft(f) = " << 2 * abs(data[i]) / n << std::endl; 
+    std::cout << "f = " << f << "hz; fft(f) = " << 2 * abs(data[i]) / L << std::endl; 
   }
 
   // Fourier::ifft(data);
@@ -78,8 +82,9 @@ int main() {
   //   std::cout << abs(piece) << std::endl; 
   // }
 
-  plt::plot({1,3,2,4});
-  plt::show();
+  matplot::plot(frequencies, amplitude, "k");
+
+  matplot::show();
 
   return 0;
 }

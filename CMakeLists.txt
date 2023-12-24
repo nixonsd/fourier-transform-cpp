@@ -19,27 +19,20 @@ file(GLOB_RECURSE SOURCES
   "${SOURCES_DIR}/*.hpp"
 )
 
-### Python3
-find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
-include_directories(${Python3_INCLUDE_DIRS})
-
-# populate matplotlib repository
 include(FetchContent)
-FetchContent_Declare(
-    matplotlib
-    GIT_REPOSITORY https://github.com/lava/matplotlib-cpp.git
-    GIT_TAG        ef0383f1315d32e0156335e10b82e90b334f6d9f
-)
-FetchContent_GetProperties(matplotlib)
-if(NOT matplotlib_POPULATED)
-    FetchContent_Populate(matplotlib)
+FetchContent_Declare(matplotplusplus
+        GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
+        GIT_TAG origin/master)
+
+FetchContent_GetProperties(matplotplusplus)
+if(NOT matplotplusplus_POPULATED)
+    FetchContent_Populate(matplotplusplus)
+    add_subdirectory(${matplotplusplus_SOURCE_DIR} ${matplotplusplus_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
-include_directories(SYSTEM ${matplotlib_SOURCE_DIR})
 
 # Fourier Transformation Library
 set(FOURIER_DIR "${SOURCES_DIR}/fourier")
 include_directories(${FOURIER_DIR})
 
 add_executable(fourier-transformation ${SOURCES})
-target_link_libraries(fourier-transformation PRIVATE Python3::Python)
-target_link_libraries(fourier-transformation PRIVATE Python3::NumPy)
+target_link_libraries(fourier-transformation PUBLIC matplot)
