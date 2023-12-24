@@ -1,9 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <set>
-#include <iomanip>
-#include <cmath>
-#include <span>
+#include <filesystem>
 
 #include "fourier.h"
 
