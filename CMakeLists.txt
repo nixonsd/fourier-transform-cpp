@@ -10,10 +10,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
+set(EXECUTABLE_OUTPUT_PATH bin)
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
 set(SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
-
 file(GLOB_RECURSE SOURCES
   "${SOURCES_DIR}/*.cpp"
   "${SOURCES_DIR}/*.hpp"
@@ -36,3 +36,6 @@ include_directories(${FOURIER_DIR})
 
 add_executable(fourier-transformation ${SOURCES})
 target_link_libraries(fourier-transformation PUBLIC matplot)
+
+# Copy example file
+configure_file(${SOURCES_DIR}/example/Sample_Signal.txt ${CMAKE_CURRENT_BINARY_DIR}/bin/Sample_Signal.txt COPYONLY)
