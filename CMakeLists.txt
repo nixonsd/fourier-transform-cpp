@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 
 project(fourier-transformation LANGUAGES CXX)
 
@@ -19,8 +19,27 @@ file(GLOB_RECURSE SOURCES
   "${SOURCES_DIR}/*.hpp"
 )
 
+### Python3
+find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
+include_directories(${Python3_INCLUDE_DIRS})
+
+# populate matplotlib repository
+include(FetchContent)
+FetchContent_Declare(
+    matplotlib
+    GIT_REPOSITORY https://github.com/lava/matplotlib-cpp.git
+    GIT_TAG        ef0383f1315d32e0156335e10b82e90b334f6d9f
+)
+FetchContent_GetProperties(matplotlib)
+if(NOT matplotlib_POPULATED)
+    FetchContent_Populate(matplotlib)
+endif()
+include_directories(SYSTEM ${matplotlib_SOURCE_DIR})
+
 # Fourier Transformation Library
 set(FOURIER_DIR "${SOURCES_DIR}/fourier")
 include_directories(${FOURIER_DIR})
 
 add_executable(fourier-transformation ${SOURCES})
+target_link_libraries(fourier-transformation PRIVATE Python3::Python)
+target_link_libraries(fourier-transformation PRIVATE Python3::NumPy)
