@@ -12,12 +12,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
 set(EXECUTABLE_OUTPUT_PATH bin)
 
-set(SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
-file(GLOB_RECURSE SOURCES
-  "${SOURCES_DIR}/*.cpp"
-  "${SOURCES_DIR}/*.hpp"
-)
-
 include(FetchContent)
 FetchContent_Declare(matplotplusplus
         GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
@@ -29,9 +23,20 @@ if(NOT matplotplusplus_POPULATED)
     add_subdirectory(${matplotplusplus_SOURCE_DIR} ${matplotplusplus_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
+set(SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
+
 # Fourier Transformation Library
 set(FOURIER_DIR "${SOURCES_DIR}/fourier")
 include_directories(${FOURIER_DIR})
+
+file(GLOB_RECURSE SOURCES
+  "${SOURCES_DIR}/*.cpp"
+  "${SOURCES_DIR}/*.hpp"
+  "${SOURCES_DIR}/*.h"
+  "${FOURIER_DIR}/*.cpp"
+  "${FOURIER_DIR}/*.hpp"
+  "${FOURIER_DIR}/*.h"
+)
 
 add_executable(fourier-transformation ${SOURCES})
 target_link_libraries(fourier-transformation PUBLIC matplot)

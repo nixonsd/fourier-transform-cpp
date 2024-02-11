@@ -9,4 +9,4 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 project(fourier)
 
 add_sources(${CMAKE_CURRENT_LIST_DIR}/fourier.cpp)
-add_executable(${PROJECT_NAME} fourier.cpp)
+add_executable(${PROJECT_NAME} fourier.cpp fourier.h)

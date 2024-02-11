@@ -1,48 +1,76 @@
 #include "fourier.h"
 
-// Cooley–Tukey FFT (in-place)
-void Fourier::fft(CArray& x)
-{
-	const size_t N = x.size();
+void Fourier::_window(std::vector<double>& x) {
+	int N = x.size();
+	for (int i = 0; i < N; i++) {
+		double multiplier = 0.5 * (1 - cos(2*PI*i/N));
+		x[i] = multiplier * x[i];
+	}
+}
+
+void Fourier::_fft(CArray& x) {
+	int N = x.size();
 	if (N <= 1) return;
 
 	// divide (half a current array by 2)
-	
-	// std::slice(0, N/2, 2);
-	
-
 	CArray even = x[std::slice(0, N/2, 2)];
 	CArray  odd = x[std::slice(1, N/2, 2)];
 	
-	// CArray even[N/2];
-	// CArray odd[N/2];
-	// for (int i = 0; i < N / 2; ++i) {
-	// 	even[i] = x[i*2];
-	// 	odd[i] = x[i*2+1];
-	// }
-
 	// conquer
-	fft(even);
-	fft(odd);
+	Fourier::_fft(even);
+	Fourier::_fft(odd);
 
 	// combine
 	for (size_t k = 0; k < N/2; ++k)
 	{
-		Complex t = std::polar(1.0, -2 * PI * k / N) * odd[k]; // magnitude = 1 theta=-2*PI*f
-		// Complex t = exp(Complex(0, -2 * M_PI * k / N)) * odd[k];
+		Complex t = std::polar(1.0, -2 * PI * k / N) * odd[k];
 		x[k    ] = even[k] + t;
 		x[k+N/2] = even[k] - t;
 	}
 }
 
-// inverse fft (in-place)
+std::valarray<Complex> Fourier::fft(std::vector<double> x, bool offsetRemoval, bool window)
+{
+	size_t N = x.size();
+
+	// calculate average
+	double avg = 0;
+  for (int i = 0; i < N; i++) {
+    avg += x[i];
+  }
+  avg /= N;
+
+	// apply offset removal
+  if (offsetRemoval) std::transform(x.begin(), x.end(), x.begin(), [=](double sample) { return sample - avg; });
+
+	// Check if the array length is a power of 2
+  for (;abs(log2(N) - int(log2(N))) > 1e-8; ++N) {
+    x.push_back(0);
+  }
+
+	// Hann Window
+	if (window) Fourier::_window(x);
+
+	std::vector<Complex> _x(N);
+	std::copy(x.begin(), x.end(), _x.begin());
+
+	CArray data(&_x[0], N);
+
+	// call Cooley-Tukey FFT function
+	Fourier::_fft(data);
+
+	return data;
+}
+
+
+// inverse fft (in-place) - is not implemented
 void Fourier::ifft(CArray& x)
 {
 	// conjugate the complex numbers
 	x = x.apply(std::conj);
 
 	// forward fft
-	fft(x);
+	Fourier::_fft(x);
 
 	// conjugate the complex numbers again
 	x = x.apply(std::conj);
@@ -50,8 +78,3 @@ void Fourier::ifft(CArray& x)
 	// scale the numbers
 	x /= x.size();
 }
-
-
-// void interpolate(std::vector<Point> points, int step) {
-//   return;
-// }
