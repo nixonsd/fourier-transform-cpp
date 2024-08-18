@@ -30,7 +30,7 @@ void smoothSpectrum(CArray& spectrum, int windowSize) {
 }
 
 int main() {
-    std::filesystem::path path = "Sample_Signal.txt";
+    std::filesystem::path path = "./example/Sample_Signal.txt";
     
     // input values P
     std::vector<double> values;

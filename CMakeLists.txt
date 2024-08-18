@@ -43,4 +43,4 @@ add_executable(fourier-transformation ${SOURCES})
 target_link_libraries(fourier-transformation PUBLIC matplot)
 
 # Copy example file
-configure_file(${SOURCES_DIR}/example/Sample_Signal.txt ${CMAKE_CURRENT_BINARY_DIR}/bin/Sample_Signal.txt COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/example/Sample_Signal.txt ${CMAKE_CURRENT_BINARY_DIR}/bin/example/Sample_Signal.txt COPYONLY)

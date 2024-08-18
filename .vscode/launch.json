@@ -21,12 +21,12 @@
       ],
       // Modify the following lines to ensure compatibility with Visual Studio Code
       "osx": {
-        "MIMode": "lldb", // LLDB is the debugger on macOS
-        "miDebuggerPath": "/usr/bin/lldb" // Default LLDB path on macOS
+        "MIMode": "lldb" // LLDB is the debugger on macOS
+        // "miDebuggerPath": "/usr/bin/lldb" // Default LLDB path on macOS
       },
       "windows": {
         "MIMode": "gdb", // You might need to use gdb on Windows (or another debugger)
-        "miDebuggerPath": "C:/path/to/gdb.exe", // Replace with your gdb path on Windows
+        // "miDebuggerPath": "C:/path/to/gdb.exe", // Replace with your gdb path on Windows
         "program": "${workspaceFolder}/bin/fourier-transformation.exe", // Windows executable
         "setupCommands": [
           {
@@ -38,9 +38,11 @@
       },
       "miDebuggerArgs": "",
       "logging": {
-        "engineLogging": false,
         "trace": false,
-        "traceResponse": false
+        "traceResponse": false,
+        "engineLogging": false,
+        "programOutput": true,  // Ensure program output is visible in the terminal
+        "exceptions": true
       },
       "preLaunchTask": "build",
       "postDebugTask": "",
