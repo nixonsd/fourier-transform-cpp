@@ -1,4 +1,4 @@
-### Installation
+# Installation
 ## Prerequisites
 1. Install CMake
 Ensure CMake is installed on your system. You can download it from [here](https://cmake.org/download/).
@@ -13,7 +13,7 @@ pip install numpy matplotlib
 ```
 Note: Make sure that the Python environment variables are correctly set up.
 
-### Building the Project
+# Building the Project
 ## Building on Linux/MacOS
 To build the project on Linux or macOS, follow these steps:
 
@@ -25,14 +25,14 @@ cmake --build . --target all
 To build the project on Windows, use the following commands:
 
 ```bash
-cmake -G "Visual Studio 17 2022" -A Win32 # 
+cmake -G "Visual Studio 17 2022" -A Win32 # example, you may configure as you see fit
 cmake --build . --target all
 ```
 Alternatively, you can use the commands as before.
 
 For more details, refer to the [CMake documentation for Visual Studio 17 2022](https://cmake.org/cmake/help/latest/generator/Visual%20Studio%2017%202022.html#).
 
-### Debugging
+# Debugging
 ## Windows
 Visual Studio: Use Visual Studio on Windows for debugging.
 
