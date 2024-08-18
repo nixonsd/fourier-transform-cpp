@@ -1,80 +1,83 @@
 #include "fourier.h"
 
-void Fourier::_window(std::vector<double>& x) {
-	int N = x.size();
-	for (int i = 0; i < N; i++) {
-		double multiplier = 0.5 * (1 - cos(2*PI*i/N));
-		x[i] = multiplier * x[i];
-	}
+void Fourier::applyHannWindow(std::vector<double>& x) {
+    int N = x.size();
+    for (int i = 0; i < N; i++) {
+        // Apply Hann window function to each element
+        double multiplier = 0.5 * (1 - cos(2 * PI * i / (N - 1)));
+        x[i] *= multiplier;
+    }
 }
 
-void Fourier::_fft(CArray& x) {
-	int N = x.size();
-	if (N <= 1) return;
+void Fourier::performFFT(CArray& x) {
+    int N = x.size();
+    if (N <= 1) return; // Base case: if the array contains only one element, do nothing
 
-	// divide (half a current array by 2)
-	CArray even = x[std::slice(0, N/2, 2)];
-	CArray  odd = x[std::slice(1, N/2, 2)];
-	
-	// conquer
-	Fourier::_fft(even);
-	Fourier::_fft(odd);
+    // Divide the array into even and odd parts
+    CArray even = x[std::slice(0, N / 2, 2)];
+    CArray odd = x[std::slice(1, N / 2, 2)];
 
-	// combine
-	for (size_t k = 0; k < N/2; ++k)
-	{
-		Complex t = std::polar(1.0, -2 * PI * k / N) * odd[k];
-		x[k    ] = even[k] + t;
-		x[k+N/2] = even[k] - t;
-	}
+    // Recursively perform FFT on both halves
+    performFFT(even);
+    performFFT(odd);
+
+    // Combine the results of the even and odd parts
+    for (size_t k = 0; k < N / 2; ++k) {
+        // Calculate the complex exponential factor
+        Complex t = std::polar(1.0, -2 * PI * k / N) * odd[k];
+        x[k] = even[k] + t;          // First half of the output
+        x[k + N / 2] = even[k] - t;  // Second half of the output
+    }
 }
 
-std::valarray<Complex> Fourier::fft(std::vector<double> x, bool offsetRemoval, bool window)
-{
-	size_t N = x.size();
+CArray Fourier::computeFFT(std::vector<double> x, bool offsetRemoval, bool applyWindow) {
+    size_t N = x.size();
 
-	// calculate average
-	double avg = 0;
-  for (int i = 0; i < N; i++) {
-    avg += x[i];
-  }
-  avg /= N;
+    // Optionally remove the DC offset (mean of the signal)
+    if (offsetRemoval) {
+        double avg = std::accumulate(x.begin(), x.end(), 0.0) / x.size();
+        std::transform(x.begin(), x.end(), x.begin(), [avg](double sample) {
+            return sample - avg;
+        });
+    }
 
-	// apply offset removal
-  if (offsetRemoval) std::transform(x.begin(), x.end(), x.begin(), [=](double sample) { return sample - avg; });
+    // Optionally apply the Hann window function
+    if (applyWindow) {
+        applyHannWindow(x);
+    }
 
-	// Check if the array length is a power of 2
-  for (;abs(log2(N) - int(log2(N))) > 1e-8; ++N) {
-    x.push_back(0);
-  }
+    // Ensure the input length is a power of 2 by padding with zeros if necessary
+    if ((N & (N - 1)) != 0) {
+        N = static_cast<size_t>(pow(2, ceil(log2(N))));
+        x.resize(N, 0);
+    }
 
-	// Hann Window
-	if (window) Fourier::_window(x);
+    // Transform the input vector to a complex vector before converting to CArray
+    std::vector<Complex> complexInput(N);
+    std::transform(x.begin(), x.end(), complexInput.begin(), [](double realValue) {
+        return Complex(realValue, 0.0); // Convert real number to complex with zero imaginary part
+    });
 
-	std::vector<Complex> _x(N);
-	std::copy(x.begin(), x.end(), _x.begin());
+    // Convert the complex vector to a CArray for FFT processing
+    CArray data(complexInput.data(), N);
 
-	CArray data(&_x[0], N);
+    // Perform the FFT on the complex array
+    performFFT(data);
 
-	// call Cooley-Tukey FFT function
-	Fourier::_fft(data);
-
-	return data;
+    return data; // Return the transformed data
 }
 
+// Inverse Fast Fourier Transform (Not Implemented)
+void Fourier::computeInverseFFT(CArray& x) {
+    // Take the complex conjugate of the input array
+    x = x.apply(std::conj);
 
-// inverse fft (in-place) - is not implemented
-void Fourier::ifft(CArray& x)
-{
-	// conjugate the complex numbers
-	x = x.apply(std::conj);
+    // Perform the FFT on the conjugated array
+    performFFT(x);
 
-	// forward fft
-	Fourier::_fft(x);
+    // Take the complex conjugate again to restore original values
+    x = x.apply(std::conj);
 
-	// conjugate the complex numbers again
-	x = x.apply(std::conj);
-
-	// scale the numbers
-	x /= x.size();
+    // Scale the output by the size of the array
+    x /= x.size();
 }
