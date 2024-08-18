@@ -9,12 +9,7 @@
         "args": [],
         "stopAtEntry": false,
         "cwd": "${workspaceFolder}",
-        "environment": [
-            {
-            "name": "PYTHONPATH",
-            "value": "/path/to/your/python/site-packages"  // Set your PYTHONPATH here
-            }
-        ],
+        "environment": [],
         "externalConsole": false,
         "MIMode": "lldb",
         "setupCommands": [

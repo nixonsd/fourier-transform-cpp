@@ -62,6 +62,8 @@ int main() {
     
     // matplot::show();
 
+    std::cout << "Hello World" << std::endl;
+
     // Test purpose
     std::vector<double> y = {1, 3, 2, 4};
     plt::plot(y);
