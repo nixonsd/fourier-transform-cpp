@@ -7,6 +7,7 @@ add_definitions(-DUNICODE -D_UNICODE)
 set(CMAKE_CXX_STANDARD 20) 
 set(CMAKE_CXX_STANDARD_REQUIRED ON) 
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
@@ -14,8 +15,8 @@ set(EXECUTABLE_OUTPUT_PATH bin)
 
 include(FetchContent)
 FetchContent_Declare(matplotplusplus
-        GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
-        GIT_TAG origin/master)
+    GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
+    GIT_TAG origin/master)
 
 FetchContent_GetProperties(matplotplusplus)
 if(NOT matplotplusplus_POPULATED)
@@ -30,12 +31,12 @@ set(FOURIER_DIR "${SOURCES_DIR}/fourier")
 include_directories(${FOURIER_DIR})
 
 file(GLOB_RECURSE SOURCES
-  "${SOURCES_DIR}/*.cpp"
-  "${SOURCES_DIR}/*.hpp"
-  "${SOURCES_DIR}/*.h"
-  "${FOURIER_DIR}/*.cpp"
-  "${FOURIER_DIR}/*.hpp"
-  "${FOURIER_DIR}/*.h"
+    "${SOURCES_DIR}/*.cpp"
+    "${SOURCES_DIR}/*.hpp"
+    "${SOURCES_DIR}/*.h"
+    "${FOURIER_DIR}/*.cpp"
+    "${FOURIER_DIR}/*.hpp"
+    "${FOURIER_DIR}/*.h"
 )
 
 add_executable(fourier-transformation ${SOURCES})

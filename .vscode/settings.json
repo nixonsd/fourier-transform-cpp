@@ -82,9 +82,14 @@
     "regex": "cpp",
     "set": "cpp",
     "unordered_set": "cpp",
-    "iterator": "cpp"
+    "iterator": "cpp",
+    "execution": "cpp"
   },
-  "C_Cpp.errorSquiggles": "disabled",
+  "C_Cpp.errorSquiggles": "enabled",
+  "C_Cpp.intelliSenseEngine": "default",
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "cmake.buildDirectory": "${workspaceFolder}",
-  "cmake.buildTask": false
+  "cmake.buildTask": true,
+  // Change CMake path
+  "cmake.cmakePath": "/opt/homebrew/bin/cmake"
 }
