@@ -1,60 +1,65 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "CMake Debug (macOS)",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/bin/fourier-transformation", 
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "lldb",
-      "setupCommands": [
+    "version": "0.2.0",
+    "configurations": [
         {
-          "description": "Enable pretty-printing for lldb",
-          "text": "settings set target.inline-breakpoint-strategy always",
-          "ignoreFailures": true
-        }
-      ],
-      // Modify the following lines to ensure compatibility with Visual Studio Code
-      "osx": {
-        "MIMode": "lldb" // LLDB is the debugger on macOS
-        // "miDebuggerPath": "/usr/bin/lldb" // Default LLDB path on macOS
-      },
-      "windows": {
-        "MIMode": "gdb", // You might need to use gdb on Windows (or another debugger)
-        // "miDebuggerPath": "C:/path/to/gdb.exe", // Replace with your gdb path on Windows
-        "program": "${workspaceFolder}/bin/fourier-transformation.exe", // Windows executable
+        "name": "CMake Debug (macOS)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin/fourier-transformation", 
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [
+            {
+            "name": "PYTHONPATH",
+            "value": "/path/to/your/python/site-packages"  // Set your PYTHONPATH here
+            }
+        ],
+        "externalConsole": false,
+        "MIMode": "lldb",
         "setupCommands": [
-          {
-            "description": "Enable pretty-printing for gdb",
-            "text": "-enable-pretty-printing",
+            {
+            "description": "Enable pretty-printing for lldb",
+            "text": "settings set target.inline-breakpoint-strategy always",
             "ignoreFailures": true
-          }
-        ]
-      },
-      "miDebuggerArgs": "",
-      "logging": {
-        "trace": false,
-        "traceResponse": false,
-        "engineLogging": false,
-        "programOutput": true,  // Ensure program output is visible in the terminal
-        "exceptions": true
-      },
-      "preLaunchTask": "build",
-      "postDebugTask": "",
-      "debugServerPath": "",
-      "debugServerArgs": "",
-      "serverStarted": "",
-      "filterStdout": false,
-      "filterStderr": false,
-      "sourceFileMap": {
-        "/path/in/container": "${workspaceFolder}"
-      },
-      "showDisplayString": true,
-    }
-  ]
+            }
+        ],
+        // Modify the following lines to ensure compatibility with Visual Studio Code
+        "osx": {
+            "MIMode": "lldb" // LLDB is the debugger on macOS
+            // "miDebuggerPath": "/usr/bin/lldb" // Default LLDB path on macOS
+        },
+        "windows": {
+            "MIMode": "gdb", // You might need to use gdb on Windows (or another debugger)
+            // "miDebuggerPath": "C:/path/to/gdb.exe", // Replace with your gdb path on Windows
+            "program": "${workspaceFolder}/bin/fourier-transformation.exe", // Windows executable
+            "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+            ]
+        },
+        "miDebuggerArgs": "",
+        "logging": {
+            "trace": false,
+            "traceResponse": false,
+            "engineLogging": false,
+            "programOutput": true,  // Ensure program output is visible in the terminal
+            "exceptions": true
+        },
+        "preLaunchTask": "build",
+        "postDebugTask": "",
+        "debugServerPath": "",
+        "debugServerArgs": "",
+        "serverStarted": "",
+        "filterStdout": false,
+        "filterStderr": false,
+        "sourceFileMap": {
+            "/path/in/container": "${workspaceFolder}"
+        },
+        "showDisplayString": true,
+        }
+    ]
 }

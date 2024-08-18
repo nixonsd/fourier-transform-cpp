@@ -13,18 +13,22 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
 set(EXECUTABLE_OUTPUT_PATH bin)
 
-include(FetchContent)
-FetchContent_Declare(matplotplusplus
-    GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
-    GIT_TAG origin/master)
+# Find Python and NumPy
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
-FetchContent_GetProperties(matplotplusplus)
-if(NOT matplotplusplus_POPULATED)
-    FetchContent_Populate(matplotplusplus)
-    add_subdirectory(${matplotplusplus_SOURCE_DIR} ${matplotplusplus_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif()
+# Manually set the NumPy include directory
+set(NUMPY_INCLUDE_DIR "/path/to/numpy/include")  # Replace with the actual path obtained above
+include_directories(${NUMPY_INCLUDE_DIR})
 
+# Include directories for Matplotlib for C++
+include_directories(${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
+
+# Set Source Dir variable
 set(SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
+
+# Find the Matplotlib for C++ header (matplotlibcpp.h)
+set(MATPLOTLIB_CPP_DIR "${SOURCES_DIR}/matplotlibcpp")
+include_directories(${MATPLOTLIB_CPP_DIR})
 
 # Fourier Transformation Library
 set(FOURIER_DIR "${SOURCES_DIR}/fourier")
@@ -37,10 +41,22 @@ file(GLOB_RECURSE SOURCES
     "${FOURIER_DIR}/*.cpp"
     "${FOURIER_DIR}/*.hpp"
     "${FOURIER_DIR}/*.h"
+    "${MATPLOTLIB_CPP_DIR}/*.h"
+    "${MATPLOTLIB_CPP_DIR}/*.cpp"
 )
 
 add_executable(fourier-transformation ${SOURCES})
-target_link_libraries(fourier-transformation PUBLIC matplot)
+
+# Link against Python libraries
+target_link_libraries(fourier-transformation ${Python3_LIBRARIES})
+
+# Set output directories for the build artifacts
+set_target_properties(fourier-transformation PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Copy example file
-configure_file(${CMAKE_SOURCE_DIR}/example/Sample_Signal.txt ${CMAKE_CURRENT_BINARY_DIR}/bin/example/Sample_Signal.txt COPYONLY)
+configure_file(
+    ${CMAKE_SOURCE_DIR}/example/Sample_Signal.txt 
+    ${CMAKE_CURRENT_BINARY_DIR}/bin/example/Sample_Signal.txt 
+    COPYONLY
+)

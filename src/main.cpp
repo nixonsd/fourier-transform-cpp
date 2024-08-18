@@ -2,32 +2,14 @@
 #include <vector>
 #include <filesystem>
 #include <cmath>
+#include <fstream>
 
+#include "matplotlibcpp.h"
 #include "fourier.h"
 
-#include <matplot/matplot.h>
+// #include <matplot/matplot.h>
 
-void smoothSpectrum(CArray& spectrum, int windowSize) {
-    CArray smoothedSpectrum(spectrum.size());
-    int halfWindow = windowSize / 2;
-    
-    for (size_t i = 0; i < spectrum.size(); ++i) {
-        Complex sum = 0.0;
-        int count = 0;
-        
-        for (int j = -halfWindow; j <= halfWindow; ++j) {
-            int index = i + j;
-            if (index >= 0 && index < spectrum.size()) {
-                sum += spectrum[index];
-                count++;
-            }
-        }
-        
-        smoothedSpectrum[i] = sum / static_cast<double>(count);
-    }
-    
-    spectrum = smoothedSpectrum;
-}
+namespace plt = matplotlibcpp;
 
 int main() {
     std::filesystem::path path = "./example/Sample_Signal.txt";
@@ -48,10 +30,9 @@ int main() {
         throw new std::length_error("Invalid input size");
     }
     
-        // forward fft
-        CArray result = Fourier::computeFFT(values, true, false);
+    // forward fft
+    CArray result = Fourier::computeFFT(values, true, false);
     CArray resultWindowed = Fourier::computeFFT(values, true, true);
-    // smoothSpectrum(resultWindowed, 5);
     
     const int N = result.size();
     std::vector<double> frequencies(N / 2);
@@ -65,19 +46,26 @@ int main() {
     // Hann Window calculation from complex numbers
     std::vector<double> hannAmplitude(N / 2);
     for (int i = 0; i < N / 2; ++i) {
-        hannAmplitude[i] = 2 * abs(resultWindowed[i]) / (N - 1);
+        hannAmplitude[i] = 2 * abs(resultWindowed[i]) / N;
     }
 
     // Set boundaries
     const int lowerBoundary = 0 * N / samplingFrequency;
     const int upperBoundary = 400 * N / samplingFrequency;
     
-    // Draw spectre
-    matplot::hold(matplot::on);
-    matplot::plot(std::vector<double>(frequencies.begin() + lowerBoundary, frequencies.begin() + upperBoundary), std::vector<double>(amplitude.begin() + lowerBoundary, amplitude.begin() + upperBoundary), "r");
-    matplot::plot(std::vector<double>(frequencies.begin() + lowerBoundary, frequencies.begin() + upperBoundary), std::vector<double>(hannAmplitude.begin() + lowerBoundary, hannAmplitude.begin() + upperBoundary), "b");
+
+
+    // // Draw spectre
+    // plt::hold(matplot::on);
+    // matplot::plot(std::vector<double>(frequencies.begin() + lowerBoundary, frequencies.begin() + upperBoundary), std::vector<double>(amplitude.begin() + lowerBoundary, amplitude.begin() + upperBoundary), "r");
+    // matplot::plot(std::vector<double>(frequencies.begin() + lowerBoundary, frequencies.begin() + upperBoundary), std::vector<double>(hannAmplitude.begin() + lowerBoundary, hannAmplitude.begin() + upperBoundary), "b");
     
-    matplot::show();
+    // matplot::show();
+
+    // Test purpose
+    std::vector<double> y = {1, 3, 2, 4};
+    plt::plot(y);
+    plt::show();
 
     return 0;
 }

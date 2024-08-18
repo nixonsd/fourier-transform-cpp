@@ -6,7 +6,7 @@
             "type": "cmake",  // Use the cmake task type
             "command": "build",  // CMake Tools command to run
             "targets": [
-            "all"
+                "all"
             ],
             "problemMatcher": ["$gcc"],
             "group": {
