@@ -8,6 +8,7 @@
 #include <complex>
 #include <valarray>
 #include <numeric>
+#include <algorithm>
 
 typedef std::complex<double> Complex;
 typedef std::valarray<Complex> CArray;

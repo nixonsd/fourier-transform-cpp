@@ -61,5 +61,14 @@ add_custom_command(TARGET fourier-transformation POST_BUILD
     $<TARGET_FILE_DIR:fourier-transformation>/example/Sample_Signal.txt
 )
 
+# Copy python311.dll to the output 
+if(WIN32)
+    add_custom_command(TARGET fourier-transformation POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${Python3_RUNTIME_LIBRARY_RELEASE}  # This is where CMake stores the path to python311.dll
+        $<TARGET_FILE_DIR:fourier-transformation>/python311.dll
+    )
+endif()
+
 # Optional: Enable Unicode definitions (if necessary)
 target_compile_definitions(fourier-transformation PRIVATE UNICODE _UNICODE)
