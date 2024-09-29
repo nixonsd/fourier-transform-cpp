@@ -32,11 +32,13 @@ set(MATPLOTLIB_CPP_DIR "${CMAKE_SOURCE_DIR}/src/matplotlibcpp")
 # Source directories
 set(SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
 set(FOURIER_DIR "${SOURCES_DIR}/fourier")
+set(SATELLITE_READER_DIR "${SOURCES_DIR}/satellite_reader")
 
 # Gather source files
 file(GLOB_RECURSE SOURCES
     "${SOURCES_DIR}/*.cpp"
     "${FOURIER_DIR}/*.cpp"
+    "${SATELLITE_READER_DIR}/*.cpp"
 )
 
 # Define executable
@@ -49,16 +51,17 @@ target_include_directories(fourier-transformation
     ${Python3_NumPy_INCLUDE_DIRS}
     ${MATPLOTLIB_CPP_DIR}
     ${FOURIER_DIR}
+    ${SATELLITE_READER_DIR}
 )
 
 # Link libraries
 target_link_libraries(fourier-transformation PRIVATE ${Python3_LIBRARIES})
 
-# Copy example files to the output directory
+# Copy the entire example folder to the output directory after building
 add_custom_command(TARGET fourier-transformation POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_SOURCE_DIR}/example/Sample_Signal.txt
-    $<TARGET_FILE_DIR:fourier-transformation>/example/Sample_Signal.txt
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/example
+    $<TARGET_FILE_DIR:fourier-transformation>/example
 )
 
 # Copy python311.dll to the output 
